@@ -25,7 +25,6 @@ print(df.columns)  # Displays all current column headers
 print(df.head())
 df.drop(columns=df.columns[0], inplace=True)
 
-
 # header may or may not exist, so using `skiprows = 1` is not good idea
 is_header = df.iloc[0, 0]
 is_trailer = df.iloc[df.shape[0] - 1, 0]
@@ -59,6 +58,13 @@ df.set_index('customerID')
 # https://stackoverflow.com/a/21942746/11605100
 df = df.replace(r'^\s*$', np.nan, regex=True)
 df = df[df['country'].notna()]
+df['lastConsultedDate'] = pd.to_datetime(df['lastConsultedDate'])
+
+# Sort the DataFrame by 'lastconsulteddate' in descending order
+df.sort_values(by='lastConsultedDate', ascending=False, inplace=True)
+
+# Drop duplicates based on 'customerid', keeping the first occurrence (latest date)
+df.drop_duplicates(subset='customerID', keep='first', inplace=True)
 
 # here date is treated as string
 print(df.info(), end="\n\n")
