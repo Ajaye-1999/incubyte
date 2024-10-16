@@ -1,0 +1,6 @@
+|H|customerName|customerID|customerOpenDate|lastConsultedDate|vaccinationType|doctorConsulted|State|Country|postcode|dateofBirth|activeCustomer
+|D|Alex|123457|20101012|20121013|MVD|Paul|SA|USA|123|06031987|A
+|D|John|123458|20101012|20121013|MVD|Paul|TN|IND|124|06031987|A
+|D|Mathew|123459|20101012|20121013|MVD|Paul|WAS|PHIL|125|06031987|A
+|D|Matt|12345|20101012|20121013|MVD|Paul|BOS|NYC|126|06031987|A
+|D|Jacob|1256|20101012|20121013|MVD|Paul|VIC|AU|127|06031987|A
