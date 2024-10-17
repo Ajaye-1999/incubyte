@@ -1,5 +1,5 @@
--- date cannot have length
--- doctorConsulted, country, etc.. cannot be char, so I have considered it as varchar
+--The date field cannot be empty or have an invalid length, and fields like doctorConsulted, country, etc. 
+--cannot be of type char, so they have been set as varchar.
 
 DROP PROCEDURE incubyte.createCountryTable;
 CREATE PROCEDURE incubyte.createCountryTable(
@@ -27,15 +27,3 @@ primary key(customerID)
 PREPARE stmt from @sql_text;
 EXECUTE stmt;
 END;
-
-
--- TO create table use:
--- call createCountryTable("tblName");
-
-
--- Select all lines in `dbeaver` and then hit ctrl enter
--- else it will throw Error 1064
-
-
--- must be some issue with terminal, this is working in dbeaver
--- but not in Ubuntu Terminal

@@ -7,10 +7,8 @@ from createTable import createTables
 
 
 def getTables(engine):
-    # If inspector is Not called again,
-    # it will not refresh the tables from database, thus using function
-
-    # Performing database inspection
+    # If the inspector isn't called again, the tables won't refresh from the database, 
+    # so we're using the function to perform a database inspection.
     inspector = inspect(engine)
 
     # Getting list of tables from "incubyte" database
@@ -20,12 +18,12 @@ def getTables(engine):
 
 
 df = pd.read_csv('C:/Users/1117a/OneDrive/Desktop/Hospital/Hospital/data/Customers_20241016161530.txt', sep="|", header=None)
-print(df.shape[1])  # Prints the number of columns
-print(df.columns)  # Displays all current column headers
+print(df.shape[1])  
+print(df.columns)  
 print(df.head())
 df.drop(columns=df.columns[0], inplace=True)
 
-# header may or may not exist, so using `skiprows = 1` is not good idea
+
 is_header = df.iloc[0, 0]
 is_trailer = df.iloc[df.shape[0] - 1, 0]
 
@@ -47,15 +45,13 @@ if is_trailer == 'T':
 # Dropping D columns as it of no use
 del df['D']
 
-# customerID is considered as float by pandas, so casting to int
+#Pandas has recognized customerID as a float, so it will be cast to an integer
 df['customerID'] = df['customerID'].apply(np.int64)
 
 # Setting customerID as index for faster operations
 df.set_index('customerID')
 
-# converting all empty string to nan, so that we can handle null country
-# TOOK HELP FROM THIS SOURCE
-# https://stackoverflow.com/a/21942746/11605100
+# Converting all empty strings to NaN so we can properly handle null values in the country field.
 df = df.replace(r'^\s*$', np.nan, regex=True)
 df = df[df['country'].notna()]
 df['lastConsultedDate'] = pd.to_datetime(df['lastConsultedDate'])
@@ -84,20 +80,15 @@ except Exception as e:
     print(e)
 
 
-# TOOK HELP FROM THIS SOURCE:
-# https://stackoverflow.com/a/13413845/11605100
-# customerOpenDate should not be null
-# coz these are not null in database, thus we have to drop those records
+# customerOpenDate should not be null because these values are not null in the database, 
+# so we need to drop any records with null values in this field.
 df = df[df['customerOpenDate'].notna()]
 
 # here date is treated as date
 print()
 print(df.info(), end="\n\n")
 print(df)
-# exit(0)
 
-# lower is applied here and not in `distinct_countries`
-# coz we need to fetch rows also
 df['country'] = df['country'].str.lower()
 
 # Getting Distinct Countries
@@ -110,7 +101,7 @@ print()
 db = "incubyte"
 try:
     engine = create_engine(
-        "mysql+mysqlconnector://root:Ajayerao%401999@localhost/incubyte")
+        "mysql+mysqlconnector://root:*******@localhost/incubyte")
     engine.connect()
     print("Database Connected")
 except Exception as e:
@@ -129,6 +120,7 @@ print("Existing Tables:", existing_tables)
 
 #Add age and last_consulted_days tO THE Dataframe to df
 if 'dateofBirth' in df.columns:
+
     # Convert 'dateofBirth' column to datetime if it's not already
     df['dateofBirth'] = pd.to_datetime(df['dateofBirth'], errors='coerce')
     
@@ -144,7 +136,7 @@ if 'dateofBirth' in df.columns:
     # Calculate 'lastconsulteddays' as the number of days since the last consultant date
     df['last_consulted_days'] = (today - df['lastConsultedDate']).dt.days
 
-    # Now you can proceed with the rest of your code
+    
 else:
     print("The 'dateofBirth' column is not present in the DataFrame.")
 # inserting records as per country
@@ -153,8 +145,6 @@ for country in distinct_countries:
     try:
         print("Inserting Records in " + country)
 
-        # `to_sql` this will create table if table does not exists,
-        # which will avoid constraints like pk, so using if condition
         if country in existing_tables:
             df[my_filt].to_sql(
                 name=country, con=engine,
